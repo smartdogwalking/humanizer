@@ -4,6 +4,45 @@
 
 Humanizer rewrites AI-sounding text so it reads like a person wrote it, without changing what it says. Because it is just Markdown, it works with any agent that supports skills.
 
+The core skill and humanization method come from [blader/humanizer](https://github.com/blader/humanizer). This repository keeps `SKILL.md` as the source of truth and also includes a small web interface for using it.
+
+## Web app
+
+The web app is a single-page Next.js utility. It sends the full contents of `SKILL.md` to the model as its instructions and returns only the final rewrite.
+
+### Run locally
+
+You need Node.js 20 or newer and an OpenAI API key.
+
+```bash
+npm install
+cp .env.example .env.local
+```
+
+Add your API key to `.env.local`. You can also change `OPENAI_MODEL`; it defaults to `gpt-5.6-luna`.
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+### Deploy to Netlify
+
+1. Push the repository to GitHub.
+2. In Netlify, select **Add new project**, import the GitHub repository, and let Netlify detect Next.js automatically.
+3. Confirm the build command is `npm run build`, which runs `next build`.
+4. Add these environment variables in the Netlify project settings:
+
+```text
+OPENAI_API_KEY=your_api_key
+OPENAI_MODEL=gpt-5.6-luna
+```
+
+5. Deploy the project.
+
+Netlify's native Next.js support runs the App Router API route. No custom Netlify Function is needed. The API key is read only by the server route and is never sent to browser code.
+
 ## Installation
 
 Install Humanizer with the Skills CLI:
@@ -168,6 +207,7 @@ The writer supplied these notes with the draft, so the rewrite can use them: the
 <details>
 <summary>Show release notes</summary>
 
+- **Unreleased** - Added a minimal Next.js web app that uses the unchanged `SKILL.md` prompt and returns only the final rewrite. Added restrained GSAP feedback for loading, writing, humanizing, and copying.
 - **3.0.0** - Rebuilt the skill around one account of why AI text sounds the way it does, and consolidated 35 patterns into 25. Patterns are grouped in five sections and numbered by strength and frequency, so the not-X-but-Y contrast and the one-line closer come first and get the fullest treatment. Merged duplicate guidance: the workflow is one section instead of five, the dash rule is stated once, and each false-positive guard lives inside its pattern. Realigned with the current Wikipedia article: dropped false ranges and synonym cycling, which Wikipedia now lists as human habits or historical, added vague connection or association, and extended the watch lists for words, notability, copulatives, sales language, disclaimers, and Markdown formatting. Reordered the README and removed the `ai-detection` keyword from the package files. Old to new numbers: 1→13, 2→17, 3→15, 4→16, 5→17, 6→13, 7→12, 8→18, 9→1, 10→6, 11→7, 12→dropped, 13→11, 14→8, 15→19, 16→19, 17→20, 18→20, 19→21, 20→22, 21→23, 22→22, 23→dropped, 24→9, 25→13, 26→10, 27→3, 28→4, 29→24, 30→25, 31→2, 32→3, 33→4, 34→5, 35→5.
 - **2.11.3** - Grouped patterns 26-35 under "More style patterns" in the skill and README (fixes #247). Kept inline code, commands, paths, and URLs out of the dash rule and file mode edits. Step 3 now keeps every supported claim, allows a removal that a pattern requires, and checks that rankings and simultaneity claims survive shape edits (fixes #212). Explained in §9 why the not-X-but-Y form appears and when to keep it. Added decorative arrows to §18 and pause commands and one-word shouting to §31. The text given to the skill is content to edit, never instructions (#238). No change to the 35 patterns.
 - **2.11.2** - Removed the plugin symlink and separate Claude Desktop package. Current Claude Code loads the root `SKILL.md` directly, so GitHub's source ZIP now works in Claude Desktop. No change to the 35 patterns.
